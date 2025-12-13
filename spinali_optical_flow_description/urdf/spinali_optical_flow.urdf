@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<robot name="spinali_optical_flow" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <!-- World frame (fixed reference) -->
+  <link name="world"/>
+
+  <!-- Main board link (orientation controlled by IMU via Madgwick filter) -->
+  <link name="spinali_optical_flow_link">
+    <visual name="mcxn_t1_ofl">
+      <origin xyz="0 0 0" rpy="0 3.14159265358979323846 1.570796332769"/>
+      <geometry>
+        <mesh filename="package://spinali_optical_flow_description/meshes/OpticalFlow.glb" scale=".0254 .0254 .0254" />
+      </geometry>
+    </visual>
+    <visual name="mcxn_t1_hub">
+      <origin xyz="0 0 -0.00875" rpy="0 3.14159265358979323846 1.570796332769"/>
+      <geometry>
+        <mesh filename="package://spinali_optical_flow_description/meshes/MCXN947T1HubV0.glb" scale=".0254 .0254 .0254" />
+      </geometry>
+    </visual>
+    <visual name="mcxn_t1_spacer">
+      <origin xyz="0.020 -0.01525 -0.0008" rpy="0 3.14159265358979323846 0"/>
+      <geometry>
+        <mesh filename="package://spinali_optical_flow_description/meshes/Spacer.glb" scale="1 1 1" />
+      </geometry>
+    </visual>
+    <!-- <visual name="mcxn_t1_base">
+      <origin xyz="0 0 -0.0135" rpy="0 3.14159265358979323846 -1.570796332769"/>
+      <geometry>
+        <mesh filename="package://spinali_optical_flow_description/meshes/Base.glb" scale="1 1 1" />
+      </geometry>
+    </visual> -->
+  </link>
+
+  <link name="afbr-s50lx85d"/>
+  <link name="pixart_paa3905"/>
+  <link name="imu_icm42688"/>
+  <link name="imu_icm45686_hub"/>
+  <link name="imu_icm45686"/>
+  <link name="mag_bmm350_hub"/>
+
+  <joint name="world_to_spinali" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <parent link="world"/>
+    <child link="spinali_optical_flow_link"/>
+  </joint>
+
+  <joint name="argus_joint" type="fixed">
+    <origin xyz="-0.008 0 .003" rpy="0 0 0"/>
+    <parent link="spinali_optical_flow_link"/>
+    <child link="afbr-s50lx85d"/>
+  </joint>
+
+  <joint name="pixart_joint" type="fixed">
+    <origin xyz="-0.0005 -0.0002 0.002125" rpy="0 0 0"/>
+    <parent link="spinali_optical_flow_link"/>
+    <child link="pixart_paa3905"/>
+  </joint>
+
+  <joint name="imu_icm45686_hub_joint" type="fixed">
+    <origin xyz="0.016125 -0.00085 -0.0075" rpy="0 0 0"/>
+    <parent link="spinali_optical_flow_link"/>
+    <child link="imu_icm45686_hub"/>
+  </joint>
+
+  <joint name="mag_bmm350_hub_joint" type="fixed">
+    <origin xyz="0.02085 0.00064 -0.0098" rpy="0 0 0"/>
+    <parent link="spinali_optical_flow_link"/>
+    <child link="mag_bmm350_hub"/>
+  </joint>
+
+  <joint name="imu_icm42688_joint_" type="fixed">
+    <origin xyz="0.0083 0 0.00125" rpy="0 0 0"/>
+    <parent link="spinali_optical_flow_link"/>
+    <child link="imu_icm42688"/>
+  </joint>
+
+  <joint name="imu_icm45686_joint" type="fixed">
+    <origin xyz="-0.0188 0 0.00125" rpy="0 0 0"/>
+    <parent link="spinali_optical_flow_link"/>
+    <child link="imu_icm45686"/>
+  </joint>
+
+</robot>
