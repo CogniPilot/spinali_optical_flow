@@ -14,9 +14,8 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
     pkg_spinali_optical_flow_description = Path(get_package_share_directory('spinali_optical_flow_description'))
-    urdf_file = pkg_spinali_optical_flow_description / 'urdf'/ 'spinali_optical_flow.urdf'
-    with open(urdf_file, 'r') as f:
-        robot_desc = f.read()
+    xacro_file = pkg_spinali_optical_flow_description / 'urdf'/ 'spinali_optical_flow.urdf.xacro'
+
     robot_state_publisher = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
@@ -24,7 +23,10 @@ def generate_launch_description():
         output='screen',
         parameters=[
             {'use_sim_time': LaunchConfiguration('use_sim_time')},
-            {'robot_description': robot_desc},
+            {'robot_description': Command([
+                'xacro ', str(xacro_file),
+                ' use_full_visual:=', LaunchConfiguration('use_full_visual')
+            ])},
         ],
         remappings=[
             ('/tf', 'tf'),
@@ -36,7 +38,10 @@ def generate_launch_description():
     ld = LaunchDescription([
         DeclareLaunchArgument('use_sim_time', default_value='false',
                               choices=['true', 'false'],
-                              description='use_sim_time')])
+                              description='use_sim_time'),
+        DeclareLaunchArgument('use_full_visual', default_value='false',
+                              choices=['true', 'false'],
+                              description='Use full detailed meshes instead of minimal geometry')])
 
     # Add nodes to LaunchDescription
     ld.add_action(robot_state_publisher)

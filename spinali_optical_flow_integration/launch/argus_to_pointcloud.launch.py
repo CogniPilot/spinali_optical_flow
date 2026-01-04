@@ -4,7 +4,7 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, Shutdown
 from launch.conditions import IfCondition
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import Command, LaunchConfiguration
 from launch_ros.actions import Node
 
 
@@ -13,10 +13,8 @@ def generate_launch_description():
     pkg_integration = Path(get_package_share_directory('spinali_optical_flow_integration'))
     pkg_description = Path(get_package_share_directory('spinali_optical_flow_description'))
 
-    # Load URDF
-    urdf_file = pkg_description / 'urdf' / 'spinali_optical_flow.urdf'
-    with open(urdf_file, 'r') as f:
-        robot_desc = f.read()
+    # Xacro file path
+    xacro_file = pkg_description / 'urdf' / 'spinali_optical_flow.urdf.xacro'
 
     # RViz config path
     rviz_config = pkg_integration / 'rviz' / 'argus_pointcloud.rviz'
@@ -28,6 +26,12 @@ def generate_launch_description():
             default_value='false',
             choices=['true', 'false'],
             description='Use simulation time'
+        ),
+        DeclareLaunchArgument(
+            'use_full_visual',
+            default_value='false',
+            choices=['true', 'false'],
+            description='Use full detailed meshes instead of minimal geometry'
         ),
         DeclareLaunchArgument(
             'launch_rviz',
@@ -187,7 +191,10 @@ def generate_launch_description():
             output='screen',
             parameters=[
                 {'use_sim_time': LaunchConfiguration('use_sim_time')},
-                {'robot_description': robot_desc},
+                {'robot_description': Command([
+                    'xacro ', str(xacro_file),
+                    ' use_full_visual:=', LaunchConfiguration('use_full_visual')
+                ])},
             ],
         ),
 

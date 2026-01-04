@@ -1,35 +1,65 @@
 <?xml version="1.0"?>
 <robot name="spinali_optical_flow" xmlns:xacro="http://ros.org/wiki/xacro">
 
+  <xacro:arg name="use_full_visual" default="false"/>
+  <xacro:property name="use_full_visual" value="$(arg use_full_visual)"/>
+
+  <!-- Z offset for minimal geometry meshes -->
+  <xacro:property name="minimal_z_offset" value="-0.0008"/>
+
+  <!-- Dark PCB green color for simple geometry -->
+  <material name="pcb_green">
+    <color rgba="0.0 0.3 0.15 1.0"/>
+  </material>
+
   <!-- World frame (fixed reference) -->
   <link name="world"/>
 
   <!-- Main board link (orientation controlled by IMU via Madgwick filter) -->
   <link name="spinali_optical_flow_link">
     <visual name="mcxn_t1_ofl">
-      <origin xyz="0 0 0" rpy="0 3.14159265358979323846 1.570796332769"/>
-      <geometry>
-        <mesh filename="package://spinali_optical_flow_description/meshes/OpticalFlow.glb" scale=".0254 .0254 .0254" />
-      </geometry>
+      <xacro:if value="${use_full_visual}">
+        <origin xyz="0 0 0" rpy="0 ${pi} ${pi/2}"/>
+        <geometry>
+          <mesh filename="package://spinali_optical_flow_description/meshes/OpticalFlow.glb" scale=".0254 .0254 .0254" />
+        </geometry>
+      </xacro:if>
+      <xacro:unless value="${use_full_visual}">
+        <origin xyz="0 0 ${minimal_z_offset}" rpy="${pi/2} 0 ${pi/2}"/>
+        <geometry>
+          <mesh filename="package://spinali_optical_flow_description/meshes/OpticalFlowMinimal.glb" scale="1 1 1" />
+        </geometry>
+      </xacro:unless>
     </visual>
     <visual name="mcxn_t1_hub">
-      <origin xyz="0 0 -0.00875" rpy="0 3.14159265358979323846 1.570796332769"/>
-      <geometry>
-        <mesh filename="package://spinali_optical_flow_description/meshes/MCXN947T1HubV0.glb" scale=".0254 .0254 .0254" />
-      </geometry>
+      <xacro:if value="${use_full_visual}">
+        <origin xyz="0 0 -0.00875" rpy="0 ${pi} ${pi/2}"/>
+        <geometry>
+          <mesh filename="package://spinali_optical_flow_description/meshes/MCXN947T1HubV0.glb" scale=".0254 .0254 .0254" />
+        </geometry>
+      </xacro:if>
+      <xacro:unless value="${use_full_visual}">
+        <origin xyz="0 0 ${-0.00865 + minimal_z_offset}" rpy="${pi/2} 0 ${pi/2}"/>
+        <geometry>
+          <mesh filename="package://spinali_optical_flow_description/meshes/MCXN947T1HubV0Minimal.glb" scale="1 1 1" />
+        </geometry>
+      </xacro:unless>
     </visual>
     <visual name="mcxn_t1_spacer">
-      <origin xyz="0.020 -0.01525 -0.0008" rpy="0 3.14159265358979323846 0"/>
+      <origin xyz="0.020 -0.01525 -0.0008" rpy="0 ${pi} 0"/>
       <geometry>
         <mesh filename="package://spinali_optical_flow_description/meshes/Spacer.glb" scale="1 1 1" />
       </geometry>
     </visual>
-    <!-- <visual name="mcxn_t1_base">
-      <origin xyz="0 0 -0.0135" rpy="0 3.14159265358979323846 -1.570796332769"/>
-      <geometry>
-        <mesh filename="package://spinali_optical_flow_description/meshes/Base.glb" scale="1 1 1" />
-      </geometry>
-    </visual> -->
+    <xacro:unless value="${use_full_visual}">
+      <visual name="mcxn_t1_base">
+        <origin xyz="0 0 -0.014" rpy="0 ${pi} ${-pi/2}"/>
+        <geometry>
+          <mesh filename="package://spinali_optical_flow_description/meshes/Base.glb" scale="1 1 1" />
+        </geometry>
+      </visual>
+    </xacro:unless>
+
   </link>
 
   <link name="afbr-s50lx85d"/>
