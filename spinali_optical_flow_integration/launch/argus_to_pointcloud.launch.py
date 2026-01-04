@@ -34,6 +34,12 @@ def generate_launch_description():
             description='Use full detailed meshes instead of minimal geometry'
         ),
         DeclareLaunchArgument(
+            'no_case',
+            default_value='true',
+            choices=['true', 'false'],
+            description='Exclude case (base and spacer) from visualization'
+        ),
+        DeclareLaunchArgument(
             'launch_rviz',
             default_value='true',
             choices=['true', 'false'],
@@ -193,7 +199,8 @@ def generate_launch_description():
                 {'use_sim_time': LaunchConfiguration('use_sim_time')},
                 {'robot_description': Command([
                     'xacro ', str(xacro_file),
-                    ' use_full_visual:=', LaunchConfiguration('use_full_visual')
+                    ' use_full_visual:=', LaunchConfiguration('use_full_visual'),
+                    ' no_case:=', LaunchConfiguration('no_case')
                 ])},
             ],
         ),

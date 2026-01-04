@@ -4,6 +4,9 @@
   <xacro:arg name="use_full_visual" default="false"/>
   <xacro:property name="use_full_visual" value="$(arg use_full_visual)"/>
 
+  <xacro:arg name="no_case" default="true"/>
+  <xacro:property name="no_case" value="$(arg no_case)"/>
+
   <!-- Z offset for minimal geometry meshes -->
   <xacro:property name="minimal_z_offset" value="-0.0008"/>
 
@@ -45,19 +48,21 @@
         </geometry>
       </xacro:unless>
     </visual>
-    <visual name="mcxn_t1_spacer">
-      <origin xyz="0.020 -0.01525 -0.0008" rpy="0 ${pi} 0"/>
-      <geometry>
-        <mesh filename="package://spinali_optical_flow_description/meshes/Spacer.glb" scale="1 1 1" />
-      </geometry>
-    </visual>
-    <xacro:unless value="${use_full_visual}">
-      <visual name="mcxn_t1_base">
-        <origin xyz="0 0 -0.014" rpy="0 ${pi} ${-pi/2}"/>
+    <xacro:unless value="${no_case}">
+      <visual name="mcxn_t1_spacer">
+        <origin xyz="0.020 -0.01525 -0.0008" rpy="0 ${pi} 0"/>
         <geometry>
-          <mesh filename="package://spinali_optical_flow_description/meshes/Base.glb" scale="1 1 1" />
+          <mesh filename="package://spinali_optical_flow_description/meshes/Spacer.glb" scale="1 1 1" />
         </geometry>
       </visual>
+      <xacro:unless value="${use_full_visual}">
+        <visual name="mcxn_t1_base">
+          <origin xyz="0 0 -0.014" rpy="0 ${pi} ${-pi/2}"/>
+          <geometry>
+            <mesh filename="package://spinali_optical_flow_description/meshes/Base.glb" scale="1 1 1" />
+          </geometry>
+        </visual>
+      </xacro:unless>
     </xacro:unless>
 
   </link>

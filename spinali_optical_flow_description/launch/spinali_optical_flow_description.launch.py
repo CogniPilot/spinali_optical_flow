@@ -25,7 +25,8 @@ def generate_launch_description():
             {'use_sim_time': LaunchConfiguration('use_sim_time')},
             {'robot_description': Command([
                 'xacro ', str(xacro_file),
-                ' use_full_visual:=', LaunchConfiguration('use_full_visual')
+                ' use_full_visual:=', LaunchConfiguration('use_full_visual'),
+                ' no_case:=', LaunchConfiguration('no_case')
             ])},
         ],
         remappings=[
@@ -41,7 +42,10 @@ def generate_launch_description():
                               description='use_sim_time'),
         DeclareLaunchArgument('use_full_visual', default_value='false',
                               choices=['true', 'false'],
-                              description='Use full detailed meshes instead of minimal geometry')])
+                              description='Use full detailed meshes instead of minimal geometry'),
+        DeclareLaunchArgument('no_case', default_value='true',
+                              choices=['true', 'false'],
+                              description='Exclude case (base and spacer) from visualization')])
 
     # Add nodes to LaunchDescription
     ld.add_action(robot_state_publisher)
